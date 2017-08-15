@@ -92,12 +92,22 @@ y needs to be a nd.array
         after rule generations).
 
 
-Sample usage
+Sample usage:
 
-from ruleset import *
+import ruleset as rs
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+
 
 df = pd.read_csv('data/adult.dat', header=None, sep=',', names=['age', 'workclass', 'fnlwgt', 'education', 'educationnum', 'matritalstatus', 'occupation', 'relationship', 'race', 'sex', 'capitalgain', 'capitalloss', 'hoursperweek', 'nativecountary', 'income'])
 y = (df['income'] == '>50K').as_matrix()
 df.drop('income', axis=1, inplace=True)
-model = BayesianRuleSet(method='forest')
-model.fit(df, y)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    df, y, test_size=0.3)
+
+model = rs.BayesianRuleSet(method='forest')
+model.fit(X_train, y_train)
+yhat = model.predict(X_test)
+TP, FP, TN, FN = rs.get_confusion(yhat, y_test)
