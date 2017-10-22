@@ -741,9 +741,9 @@ class BayesianRuleSet(object):
         # 'add' a rule        
         if len(move) > 0 and move[0] == 'add':
             if y[ex] == 1:
-                select = np.where((self.supp>self.C[-1]) & ~RMatrix[ex] > 0)[0]
-            else:
                 select = np.where((self.supp>self.C[-1]) & RMatrix[ex] > 0)[0]
+            else:
+                select = np.where((self.supp>self.C[-1]) & ~RMatrix[ex] > 0)[0]
             if len(select) > 0:
                 if random() < self.propose_threshold:
                     add_rule = sample(select.tolist(),1)[0]
