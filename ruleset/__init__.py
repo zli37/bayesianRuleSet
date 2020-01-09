@@ -266,7 +266,7 @@ class BayesianRuleSet(object):
         cutoffs = dict()
         for col in X.columns:
             if (X[col].dtype == 'int64') | (X[col].dtype == 'float64'):
-                tmps = sorted(list(zip(X[col].as_matrix(), y)))
+                tmps = sorted(list(zip(X[col].values, y)))
                 cutoff = []
                 interval = (X[col].max() - X[col].min()) / self.level
                 for i, tmp in enumerate(tmps):
@@ -294,7 +294,7 @@ class BayesianRuleSet(object):
         if self.method == 'fpgrowth':
             from fim import fpgrowth, fim
             items = np.arange(1, len(X_trans.columns)+1)
-            itemMatrix = (X_trans * items).as_matrix()
+            itemMatrix = (X_trans * items).values
             itemMatrix_numerical = np.array([row[row>0] for row in itemMatrix])
             rules = fpgrowth(itemMatrix_numerical[np.where(y==1)].tolist(), 
                              supp=self.support, zmin=1,
@@ -543,7 +543,7 @@ class BayesianRuleSet(object):
                     continue
                 else:
                     valid_working_items += 1
-                    working_X = X[name_meaning[0]].as_matrix()[working_idx]
+                    working_X = X[name_meaning[0]].values[working_idx]
                     for working_cutoff in working_cutoffs:
                         working_matrix = np.concatenate((working_matrix,
                                                          (working_X<working_cutoff).reshape(-1,1)),
@@ -561,7 +561,7 @@ class BayesianRuleSet(object):
                     continue
                 else:
                     valid_working_items += 1
-                    working_X = X[name_meaning[1]].as_matrix()[working_idx]
+                    working_X = X[name_meaning[1]].values[working_idx]
                     for working_cutoff in working_cutoffs:
                         working_matrix = np.concatenate((working_matrix,
                                                          (working_X>=working_cutoff).reshape(-1,1)),
